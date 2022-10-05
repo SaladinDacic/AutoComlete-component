@@ -1,38 +1,66 @@
-.App {
-  text-align: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  font-family: sans-serif;
+  background-color: green;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+h1,
+h3 {
+  font-family: Arial;
+}
+.autoCompleteContainer {
+  margin: 10rem auto;
+  width: fit-content;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.suggestionCategory {
+  width: 40.1rem;
+  padding: 0.3rem 1rem;
+  border-top-right-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom: none;
+  translate: -0.05rem;
+}
+
+.suggestionInput {
+  min-width: 40rem;
+  min-height: 5rem;
+  background-color: white;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+  border-left: none;
+  border-right: none;
+  padding: 0.3rem 1rem;
+  font-size: large;
+}
+.suggestionList {
+  background-color: white;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  text-decoration: none;
+  list-style: none;
+  border-top: none;
+  width: 40rem;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  border-top: none;
+  padding: 0.5rem 1rem;
+  font-style: italic;
 }
-
-.App-link {
-  color: #61dafb;
+.suggestionList>li {
+  margin-bottom: 7px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.204);
+  cursor: pointer;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.suggestionList>li:hover {
+  background-color: rgb(208, 216, 223);
 }
