@@ -1,28 +1,14 @@
-import { useEffect, useRef, useState } from "react";
-import * as mockAlbums from "./mockData/mockAlbums.json";
-import * as mockComments from "./mockData/mockComments.json";
-import * as mockPosts from "./mockData/mockPosts.json";
-import * as mockTodos from "./mockData/mockTodos.json";
-import * as mockUsers from "./mockData/mockUsers.json";
+import { useState } from "react";
 
-const AutoComplete = () => {
-  const allData = { mockAlbums, mockComments, mockPosts, mockTodos, mockUsers };
-  const [data, setData] = useState<{}[]>([]);
+const AutoComplete = ({data, selectCategory }:{data:{}[], selectCategory: (category:string) =>void}) => {
   const [inputText, setInputText] = useState("");
-  const [category, setCategory] = useState("mockUsers");
   const [suggestedSearch, setSuggestedSearch] = useState<string[]>([]);
-
-  const selectedCategory = (allData: any, category: any) => {
-    return Object.keys(allData).find((value) => {
-      return value === category;
-    });
-  };
 
   const handleInputChange = (input: string, data: any) => {
     if (input.length !== 0) {
       let filteredDataByInput = filterData(data, input);
       let filteredData = removeUndefined(filteredDataByInput);
-      setSuggestedSearch(filteredData.slice(0, 10));
+      setSuggestedSearch(filteredData.slice(0,10));
     } else {
       setSuggestedSearch([]);
     }
@@ -31,7 +17,7 @@ const AutoComplete = () => {
   const reactFragmentLiElement = (
     <>
       {suggestedSearch?.map((text: string, idx) => {
-        var dangerHtml = markCharacters(text, inputText, idx);
+        var dangerHtml = markCharacters(text, inputText);
         return (
           <li
             onClick={() => {
@@ -47,32 +33,6 @@ const AutoComplete = () => {
     </>
   );
 
-  useEffect(() => {
-    (async () => {
-      const nameOfCategory = selectedCategory(allData, category);
-      const typedInputData = allData as any;
-
-      const data = await new Promise((resolve, reject) => {
-        if (nameOfCategory !== undefined) {
-          resolve(typedInputData[nameOfCategory]);
-        } else {
-          resolve(typedInputData);
-        }
-        reject("can't fetch data");
-      });
-      const typedData = data as any;
-      if (nameOfCategory !== undefined) {
-        setData(typedData.default);
-      } else {
-        const extractedData = Object.keys(typedData).reduce((acc, keyName) => {
-          return acc.concat(typedInputData[keyName].default);
-        }, []);
-        setData(extractedData);
-      }
-    })();
-    return () => {};
-  }, [category]);
-
   return (
     <div className="autoCompleteContainer">
       <select
@@ -80,7 +40,7 @@ const AutoComplete = () => {
         name="category"
         id="1"
         onChange={(evt) => {
-          setCategory(evt.target.value);
+          selectCategory(evt.target.value);
         }}
       >
         <option value="mockUsers">users</option>
@@ -91,7 +51,7 @@ const AutoComplete = () => {
         <option value="everything">everything</option>
       </select>
       <div className="text-container">
-        <textarea
+        <input
           placeholder="Search anything"
           className="suggestionInput"
           autoComplete="off"
@@ -111,17 +71,18 @@ const AutoComplete = () => {
 
 export default AutoComplete;
 
-function markCharacters(text: string, stateText: string, idx: number) {
-  const regMatch = new RegExp(`${stateText}`, "gi");
-  const modedTextArr = text.replace(regMatch, "§§§").split("§§§");
-  const stringsObj: any = {};
-  modedTextArr.forEach((string: string, idx: number) => {
-    const strName = `str${idx}`;
-    stringsObj[strName] = `<span>${string}</span>`;
-  });
-  var htmlStyled = `<span style=background-color:gray>${stateText}</span>`;
-  var dangerHtml = Object.values(stringsObj).join(htmlStyled);
-  return dangerHtml;
+
+function markCharacters(text: string, stateText: string)
+{
+  try {
+    const regMatch = new RegExp(`${stateText}`, "gi");
+    const modedTextArr = text.replace(regMatch, `</span><span style=background-color:gray>${stateText}</span><span>`)
+    const dangerHtml = `<span>${modedTextArr}</span>`
+    return dangerHtml;
+    
+  } catch (error) {
+    return "<></>";
+  }
 }
 
 function filterData(data: any, input: string) {
